@@ -28,10 +28,7 @@
     "autoload": {
         "psr-4": {
             "Xianghuawe\\Admin\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+        }
     },
     "autoload-dev": {},
     "scripts": {
