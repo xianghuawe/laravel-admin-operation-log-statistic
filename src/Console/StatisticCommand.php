@@ -1,0 +1,134 @@
+<?php
+
+namespace Xianghuawe\Admin\Console;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Xianghuawe\Admin\Mail\BaseMail;
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
+use Xianghuawe\Admin\Mail\AdminOperationLogStatisticWarning;
+
+class StatisticCommand extends Command
+{
+    protected $signature = 'admin-operation-logs:statistic';
+
+    protected $description = '回收后台日志记录表';
+
+    public function handle()
+    {
+        $configKey  = 'request_rate_limit_count';
+        $countLimit = (int)config($configKey, 20);
+        if ($countLimit < 1) {
+            Log::error($this->description . "缺少配置[$configKey]或者配置[$configKey]不正确");
+            return self::FAILURE;
+        }
+        $statisticDate = today()->subDay();
+
+        $data = DB::table(config('admin.database.operation_log_table'))
+            ->where('created_at', '>=', $statisticDate->toDateString())
+            ->where('created_at', '<', $statisticDate->addDay()->toDateString())
+            ->selectRaw('count(*) as num,user_id,path')
+            ->groupBy(['user_id', 'path'])
+            ->get();
+
+        $data = $data->groupBy('user_id')
+            ->map(function (Collection $item) use ($countLimit, $statisticDate) {
+                $item = $item->transform(function ($item) use ($countLimit, $statisticDate) {
+                    // 合并path里包含参数的路由
+                    preg_match('/(.*)\/\d+$/', $item->path, $matches);
+                    if (!empty($matches)) {
+                        $item->path = $matches[1];
+                    }
+                    return $item;
+                })
+                    ->groupBy('path')
+                    ->transform(function ($item) {
+                        $fist = $item->first();
+                        return [
+                            'user_id' => $fist->user_id,
+                            'path'    => $fist->path,
+                            'num'     => $item->sum('num'),
+                        ];
+                    });
+
+                $top = $item->sortByDesc('num')->first();
+
+                $item = [
+                    'date'       => $statisticDate->toDateString(),
+                    'user_id'    => $top['user_id'],
+                    'total'      => $item->sum('num'),
+                    'top_path'   => $top['path'],
+                    'top_num'    => $top['num'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+                if ($item['total'] < $countLimit) {
+                    return null;
+                }
+                return $item;
+            })
+            ->filter()
+            ->sortBy('total');
+
+        config('admin.database.operation_statistic_model')::where('date', $statisticDate->toDateString())->delete();
+
+        if ($data->isNotEmpty()) {
+            foreach ($data->chunk(500) as $insertData) {
+                config('admin.database.operation_statistic_model')::insert($insertData->toArray());
+            }
+            $this->createEmailNotification('xianghua_we@163.com', new AdminOperationLogStatisticWarning($statisticDate));
+        }
+
+        return self::SUCCESS;
+    }
+
+    /**
+     * 创建邮件通知
+     */
+    public function createEmailNotification($to, BaseMail $mailableNotification)
+    {
+        $client = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'X-Client' => config('admin.notification.client_id'),
+        ])
+            ->baseUrl(config('admin.notification.uri'));
+
+        $formParams = [
+            'channel' => 1,
+            'send_after' => 0,
+            'route' => $to,
+            'content' => $mailableNotification->render(),
+            'created_by' => null,
+            'priority' => 1,
+            'notification_source' => json_encode($mailableNotification->envelope())
+        ];
+
+        $requestId = Str::uuid();
+        $formParams['request_id'] = $requestId;
+        $formParams['request_time'] = time();
+        ksort($formParams);
+        $formParams['signature'] = self::signature(Arr::only($formParams, [
+            'request_time',
+        ]), config('admin.notification.client_secret'));
+
+        $client->post(config('admin.notification.endpoint', 'notifications'), $formParams);
+    }
+
+    /**
+     * 签名
+     *
+     * @param array|Collection $data
+     * @param string $secret
+     * @param string $secretColumn
+     * @return string
+     */
+    public static function signature(array $data, string $secret): string
+    {
+        ksort($data);
+        return md5(Arr::query($data) . "&secret={$secret}");
+    }
+}
