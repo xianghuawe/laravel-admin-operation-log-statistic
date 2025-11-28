@@ -38,7 +38,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Xianghuawe\\Admin\\AdminServiceProvider"
+                "Xianghuawe\\Admin\\ServiceProvider"
             ],
             "aliases": {}
         }
