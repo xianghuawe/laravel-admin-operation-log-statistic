@@ -7,7 +7,6 @@ use Encore\Admin\Grid;
 
 class AdminOperationLogStatisticController extends AdminController
 {
-
     public function title()
     {
         return __('admin-operation-log-statistic.labels.list');

@@ -41,7 +41,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $this->publishes([__DIR__ . '/../config' => config_path()], 'operation-log-statistic-config');
 
             $this->publishes([__DIR__ . '/../resources/lang' => resource_path('lang')], 'operation-log-statistic-lang');
-           
+
             $this->publishes([__DIR__ . '/../database/migrations' => database_path('migrations')], 'operation-log-statistic-migrations');
         }
     }

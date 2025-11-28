@@ -16,14 +16,14 @@ return [
     ],
 
     'notification' => [
-        'client_id' => env('ADMIN_NOTIFICATION_CLIENT_ID', ''),
+        'client_id'     => env('ADMIN_NOTIFICATION_CLIENT_ID', ''),
         'client_secret' => env('ADMIN_NOTIFICATION_CLIENT_SECRET', ''),
-        'uri' => env('ADMIN_NOTIFICATION_URI', ''),
-        'endpoint' => env('ADMIN_NOTIFICATION_ENDPOINT', 'notifications'),
+        'uri'           => env('ADMIN_NOTIFICATION_URI', ''),
+        'endpoint'      => env('ADMIN_NOTIFICATION_ENDPOINT', 'notifications'),
     ],
 
     'operation-log-statistic' => [
-        'enable' => env('OPERATION_LOG_STATISTIC_ENABLE', false),
+        'enable'   => env('OPERATION_LOG_STATISTIC_ENABLE', false),
         'daily_at' => env('OPERATION_LOG_STATISTIC_AT', '09:55'),
     ],
 

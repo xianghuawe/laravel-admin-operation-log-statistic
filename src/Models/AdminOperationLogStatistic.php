@@ -17,7 +17,7 @@ class AdminOperationLogStatistic extends Model
 
         parent::__construct($attributes);
     }
-    
+
 
     public function user(): BelongsTo
     {

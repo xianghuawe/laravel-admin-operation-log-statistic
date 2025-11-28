@@ -93,37 +93,46 @@ class StatisticCommand extends Command
     {
         $client = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'X-Client' => config('admin.notification.client_id'),
+            'X-Client'     => config('admin.notification.client_id'),
         ])
+            ->acceptJson()
             ->baseUrl(config('admin.notification.uri'));
 
         $formParams = [
-            'channel' => 1,
-            'send_after' => 0,
-            'route' => $to,
-            'content' => $mailableNotification->render(),
-            'created_by' => null,
-            'priority' => 1,
+            'channel'             => 1,
+            'send_after'          => 0,
+            'route'               => $to,
+            'content'             => $mailableNotification->render(),
+            'created_by'          => null,
+            'priority'            => 1,
             'notification_source' => json_encode($mailableNotification->envelope())
         ];
 
-        $requestId = Str::uuid();
-        $formParams['request_id'] = $requestId;
+        $requestId                  = Str::uuid();
+        $formParams['request_id']   = $requestId;
         $formParams['request_time'] = time();
         ksort($formParams);
         $formParams['signature'] = self::signature(Arr::only($formParams, [
             'request_time',
         ]), config('admin.notification.client_secret'));
 
-        $client->post(config('admin.notification.endpoint', 'notifications'), $formParams);
+        $res    = $client->post(config('admin.notification.endpoint', 'notifications'), $formParams);
+        $res    = $res->json();
+        $status = Arr::get($res, 'status');
+        if (!$status) {
+            $msg = Arr::get($res, 'message');
+            throw new \Exception('send email got error ' . $msg);
+        }
+        return true;
     }
 
     /**
      * 签名
      *
      * @param array|Collection $data
-     * @param string $secret
-     * @param string $secretColumn
+     * @param string           $secret
+     * @param string           $secretColumn
+     *
      * @return string
      */
     public static function signature(array $data, string $secret): string
