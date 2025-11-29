@@ -61,9 +61,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $schedule = $this->app->make(Schedule::class);
             // 定义任务执行频率（例如每天凌晨3点）
             $schedule->command('admin-operation-log:statistic')
-                ->dailyAt(config('admin.operation-log-statistic.daily_at'))
+                ->dailyAt(config('admin.operation_log_statistic.daily_at'))
                 ->when(function () {
-                    return config('admin.operation-log-statistic.enable');
+                    return config('admin.operation_log_statistic.enable');
                 })
                 ->name('统计操作日志')
                 ->onOneServer()

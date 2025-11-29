@@ -54,7 +54,7 @@ class AdminOperationLogStatisticController extends AdminController
         $grid->column('user.name', __('admin-operation-log-statistic.fields.name'));
         $grid->column('role_name', __('admin-operation-log-statistic.fields.role_name'))
             ->display(function () {
-                return $this->user->roles->pluck('name');
+                return $this->user?->roles?->pluck('name');
             })->label();
         $grid->column('total', __('admin-operation-log-statistic.fields.total'))->sortable();
         $grid->column('top_num', __('admin-operation-log-statistic.fields.top_num'))->sortable();

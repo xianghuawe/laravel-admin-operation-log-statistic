@@ -15,7 +15,7 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0",
+    "php": ">=8.1.0",
     "laravel/framework": ">=5.5",
     "encore/laravel-admin": "^1.8.19"
   },

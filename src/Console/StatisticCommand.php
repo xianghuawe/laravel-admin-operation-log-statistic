@@ -18,6 +18,10 @@ class StatisticCommand extends Command
 
     protected $description = '回收后台日志记录表';
 
+    /**
+     * @return int
+     * @throws \Exception
+     */
     public function handle()
     {
         $configKey  = 'admin-operation-log.request_rate_limit_count';
@@ -80,7 +84,9 @@ class StatisticCommand extends Command
             foreach ($data->chunk(500) as $insertData) {
                 config('admin.database.operation_statistic_model')::insert($insertData->toArray());
             }
-            $this->createEmailNotification('xianghua_we@163.com', new AdminOperationLogStatisticWarning($statisticDate));
+            if (config('admin.operation_log_statistic.admin_email')) {
+                $this->createEmailNotification(config('admin.operation_log_statistic.admin_email'), new AdminOperationLogStatisticWarning($statisticDate));
+            }
         }
 
         return self::SUCCESS;
@@ -129,9 +135,8 @@ class StatisticCommand extends Command
     /**
      * 签名
      *
-     * @param array|Collection $data
-     * @param string           $secret
-     * @param string           $secretColumn
+     * @param array  $data
+     * @param string $secret
      *
      * @return string
      */
