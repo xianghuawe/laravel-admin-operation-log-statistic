@@ -34,7 +34,7 @@ class StatisticCommand extends Command
 
         $data = DB::table(config('admin.database.operation_log_table'))
             ->where('created_at', '>=', $statisticDate->toDateString())
-            ->where('created_at', '<', $statisticDate->addDay()->toDateString())
+            ->where('created_at', '<', $statisticDate->copy()->addDay()->toDateString())
             ->selectRaw('count(*) as num,user_id,path')
             ->groupBy(['user_id', 'path'])
             ->get();

@@ -2,7 +2,7 @@
   "name": "xianghuawe/laravel-admin-operation-log-statistic",
   "description": "laravel admin operation log statistic",
   "type": "library",
-  "version": "1.0.0.1",
+  "version": "1.0.0.2",
   "keywords": [
     "laravel-admin",
     "operation-log-statistic"
