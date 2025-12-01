@@ -25,7 +25,6 @@ return [
     'operation_log_statistic' => [
         'enable'   => env('OPERATION_LOG_STATISTIC_ENABLE', false),
         'daily_at' => env('OPERATION_LOG_STATISTIC_AT', '09:55'),
-        'admin_email' => env('OPERATION_LOG_STATISTIC_ADMIN_EMAIL', ''),
     ],
 
 ];

@@ -84,8 +84,8 @@ class StatisticCommand extends Command
             foreach ($data->chunk(500) as $insertData) {
                 config('admin.database.operation_statistic_model')::insert($insertData->toArray());
             }
-            if (config('admin.operation_log_statistic.admin_email')) {
-                $this->createEmailNotification(config('admin.operation_log_statistic.admin_email'), new AdminOperationLogStatisticWarning($statisticDate));
+            if (config('admin-operation-log.admin_email')) {
+                $this->createEmailNotification(config('admin-operation-log.admin_email'), new AdminOperationLogStatisticWarning($statisticDate));
             }
         }
 
