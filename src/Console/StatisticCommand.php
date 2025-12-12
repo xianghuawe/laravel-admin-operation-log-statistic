@@ -39,8 +39,10 @@ class StatisticCommand extends Command
             ->groupBy(['user_id', 'path'])
             ->get();
 
+        $exceptPaths = config('admin.operation_log_statistic.except', []);
+
         $data = $data->groupBy('user_id')
-            ->map(function (Collection $item) use ($countLimit, $statisticDate) {
+            ->map(function (Collection $item) use ($countLimit, $statisticDate, $exceptPaths) {
                 $item = $item->transform(function ($item) use ($countLimit, $statisticDate) {
                     // 合并path里包含参数的路由
                     preg_match('/(.*)\/\d+$/', $item->path, $matches);
@@ -72,6 +74,11 @@ class StatisticCommand extends Command
                 ];
                 if ($item['total'] < $countLimit) {
                     return null;
+                }
+                foreach ($exceptPaths as $exceptPath) {
+                    if (Str::is($exceptPath, $top['path'])) {
+                        return null;
+                    }
                 }
                 return $item;
             })
