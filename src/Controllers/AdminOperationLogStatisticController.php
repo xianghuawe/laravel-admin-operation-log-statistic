@@ -45,11 +45,19 @@ class AdminOperationLogStatisticController extends AdminController
 
 
         $grid->model()->with([
-            'user.roles'
+            'user.roles',
+            'user' => function($query) {
+                $query->with(['company' => function($query) {
+                    $query->withDefault();
+                }]);
+            }
         ]);
 
         $grid->column('date', __('admin-operation-log-statistic.fields.date'));
         $grid->column('user_id', __('admin-operation-log-statistic.fields.user_id'));
+        $grid->column('company', __('admin-operation-log-statistic.fields.company'))->display(function(){
+            return $this->user?->company?->name;
+        });
         $grid->column('user.username', __('admin-operation-log-statistic.fields.username'));
         $grid->column('user.name', __('admin-operation-log-statistic.fields.name'));
         $grid->column('role_name', __('admin-operation-log-statistic.fields.role_name'))
