@@ -13,8 +13,6 @@ return [
     'database' => [
         // Menu table and model.
         'operation_statistic_model' => Xianghuawe\Admin\Models\AdminOperationLogStatistic::class,
-        'company_users_model' => Xianghuawe\Admin\Models\CompanyUsers::class,
-        'company_model' => Xianghuawe\Admin\Models\Company::class,
     ],
 
     'notification' => [
