@@ -11,6 +11,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     protected $commands = [
         Console\StatisticCommand::class,
+        Console\SetStatisticCompanyCommand::class,
     ];
 
     /**

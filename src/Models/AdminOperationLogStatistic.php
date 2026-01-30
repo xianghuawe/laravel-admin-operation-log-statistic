@@ -23,4 +23,9 @@ class AdminOperationLogStatistic extends Model
     {
         return $this->belongsTo(config('admin.database.users_model'));
     }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(config('admin.database.company_model'),'company_id', 'id');
+    }
 }
