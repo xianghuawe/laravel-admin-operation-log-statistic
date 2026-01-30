@@ -17,11 +17,10 @@ class SetStatisticCompanyCommand extends Command
     public function handle()
     {
 
-        config('admin.database.operation_statistic_model')::whereNull('company_id')
-        ->chunkById(100, function($data) {
+        config('admin.database.operation_statistic_model')
+        ::chunkById(100, function($data) {
             foreach ($data as $value) {
-                $company_id = config('admin.database.company_users_model')::where('admin_user_id', $value->user_id)->value('company_id');
-                $value->company_id = $company_id;
+                $value->company_id = $value?->user?->company?->id;
                 $value->save();
             }
         });
