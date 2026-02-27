@@ -37,6 +37,7 @@ class AdminOperationLogStatisticController extends AdminController
                 if($companyModel){
                     $companyList = $companyModel::all()->pluck('name', 'id')->prepend('平台', -1);
                     $filter->where(function (Builder $builder) {
+                        $this->input = strip_tags($this->input);
                         if($this->input == -1){
                             $this->input = null;
                         }
