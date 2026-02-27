@@ -128,9 +128,47 @@ php artisan admin-operation-logs:statistic
 3. 定时任务需要正常运行才能自动统计
 4. 邮件通知功能需要配置正确的通知服务
 
+## 代码质量检查
+
+本项目集成了完整的代码质量检查工具，确保代码的规范性和稳定性。
+
+### 本地运行代码质量检查
+
+使用以下命令在本地运行完整的代码质量检查：
+
+```bash
+# 运行所有代码质量检查
+./scripts/run-code-quality.sh
+
+# 单独运行 Laravel Pint（代码风格检查）
+php vendor/bin/pint --test
+
+# 单独运行 PHPStan（静态代码分析）
+php vendor/bin/phpstan analyze
+
+# 单独运行 PHPUnit（单元测试）
+php vendor/bin/phpunit
+```
+
+### GitHub Actions 工作流
+
+项目配置了 GitHub Actions 工作流，会在每次推送和拉取请求时自动运行代码质量检查：
+
+- **代码风格检查**：使用 Laravel Pint 检查代码风格
+- **静态代码分析**：使用 PHPStan 进行静态代码分析
+- **单元测试**：使用 PHPUnit 运行单元测试
+
+工作流配置文件位于 `.github/workflows/code-quality.yml`。
+
 ## 贡献
 
 欢迎提交 Issue 和 Pull Request！
+
+### 贡献指南
+
+1. 确保你的代码符合项目的代码风格规范
+2. 运行本地代码质量检查确保没有问题
+3. 提交 Pull Request 前确保所有检查通过
 
 ## 许可证
 
