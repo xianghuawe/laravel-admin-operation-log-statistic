@@ -6,10 +6,10 @@ return [
     ],
 
     'fields' => [
-        "id" => "ID",
+        'id' => 'ID',
 
-        "created_at"  => "Created At",
-        "updated_at"  => "Updated At",
+        'created_at'  => 'Created At',
+        'updated_at'  => 'Updated At',
         'date'        => 'Date',
         'role_name'   => 'Role',
         'total'       => 'Access Total',

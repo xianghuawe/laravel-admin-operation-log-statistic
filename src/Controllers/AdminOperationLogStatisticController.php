@@ -20,10 +20,9 @@ class AdminOperationLogStatisticController extends AdminController
      */
     protected function grid(): Grid
     {
-
         $model = config('admin.database.operation_statistic_model');
 
-        $grid = new Grid(new $model());
+        $grid = new Grid(new $model);
 
         $companyModel = config('admin.database.company_model');
 
@@ -34,11 +33,12 @@ class AdminOperationLogStatisticController extends AdminController
                     ->select($roleModel::all()->pluck('name', 'id'));
                 $filter->equal('user.invite_code', __('admin-operation-log-statistic.fields.invite_code'));
 
-                if($companyModel){
+                if ($companyModel) {
                     $companyList = $companyModel::all()->pluck('name', 'id')->prepend('平台', -1);
                     $filter->where(function (Builder $builder) {
+                        /** @var \Encore\Admin\Grid\Filter\Where $this */
                         $this->input = strip_tags($this->input);
-                        if($this->input == -1){
+                        if ($this->input == -1) {
                             $this->input = null;
                         }
                         $builder->where('company_id', $this->input);
@@ -59,7 +59,7 @@ class AdminOperationLogStatisticController extends AdminController
         });
 
         $with = ['user.roles'];
-        if($companyModel){
+        if ($companyModel) {
             $with[] = 'company';
         }
 
@@ -67,8 +67,9 @@ class AdminOperationLogStatisticController extends AdminController
 
         $grid->column('date', __('admin-operation-log-statistic.fields.date'));
         $grid->column('user_id', __('admin-operation-log-statistic.fields.user_id'));
-        if($companyModel){
-            $grid->column('company', __('admin-operation-log-statistic.fields.company'))->display(function(){
+        if ($companyModel) {
+            $grid->column('company', __('admin-operation-log-statistic.fields.company'))->display(function () {
+                // @phpstan-ignore-next-line
                 return $this->company?->name;
             });
         }
@@ -76,6 +77,7 @@ class AdminOperationLogStatisticController extends AdminController
         $grid->column('user.name', __('admin-operation-log-statistic.fields.name'));
         $grid->column('role_name', __('admin-operation-log-statistic.fields.role_name'))
             ->display(function () {
+                // @phpstan-ignore-next-line
                 return $this->user?->roles?->pluck('name');
             })->label();
         $grid->column('total', __('admin-operation-log-statistic.fields.total'))->sortable();

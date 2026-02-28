@@ -53,7 +53,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function register()
     {
-
         $this->commands($this->commands);
 
         // 注册定时任务调度（关键：向 Laravel 项目的调度器添加任务）
@@ -79,10 +78,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         ];
 
         app('router')->group($attributes, function ($router) {
-
             /* @var \Illuminate\Support\Facades\Route $router */
             $router->namespace('\Xianghuawe\Admin\Controllers')->group(function ($router) {
-
                 /* @var \Illuminate\Routing\Router $router */
                 $router->resource('system/admin-operation-log-statistics', 'AdminOperationLogStatisticController', ['only' => 'index'])->names('admin.system.admin-operation-log-statistics');
             });

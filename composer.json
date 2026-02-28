@@ -24,7 +24,9 @@
     "laravel/laravel": ">=5.5",
     "phpunit/phpunit": "^9.5",
     "orchestra/testbench": "^7.0",
-    "laravel/pint": ">1.0"
+    "laravel/pint": ">1.0",
+    "phpstan/phpstan": "^1.10",
+    "larastan/larastan": "^2.11"
   },
   "autoload": {
     "psr-4": {
@@ -42,6 +44,11 @@
         "Xianghuawe\\Admin\\ServiceProvider"
       ],
       "aliases": {}
+    }
+  },
+  "config": {
+    "audit": {
+      "block-insecure": false
     }
   }
 }
