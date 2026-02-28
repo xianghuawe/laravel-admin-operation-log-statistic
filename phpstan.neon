@@ -1,5 +1,5 @@
 includes:
-    - ./vendor/nunomaduro/larastan/extension.neon
+    - ./vendor/larastan/larastan/extension.neon
 
 parameters:
     level: 5
@@ -7,6 +7,4 @@ parameters:
         - src/
     excludePaths:
         - vendor/
-    tmpDir: ./storage/phpstan
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
+    tmpDir: ./phpstan

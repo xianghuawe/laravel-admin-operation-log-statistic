@@ -64,7 +64,7 @@ class StatisticCommand extends Command
                     return $item;
                 })
                     ->groupBy('path')
-                    ->transform(function ($item) {
+                    ->map(function (Collection $item) {
                         $fist = $item->first();
 
                         return [

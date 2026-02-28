@@ -36,6 +36,7 @@ class AdminOperationLogStatisticController extends AdminController
                 if ($companyModel) {
                     $companyList = $companyModel::all()->pluck('name', 'id')->prepend('平台', -1);
                     $filter->where(function (Builder $builder) {
+                        /** @var \Encore\Admin\Grid\Filter\Where $this */
                         $this->input = strip_tags($this->input);
                         if ($this->input == -1) {
                             $this->input = null;
@@ -68,6 +69,7 @@ class AdminOperationLogStatisticController extends AdminController
         $grid->column('user_id', __('admin-operation-log-statistic.fields.user_id'));
         if ($companyModel) {
             $grid->column('company', __('admin-operation-log-statistic.fields.company'))->display(function () {
+                // @phpstan-ignore-next-line
                 return $this->company?->name;
             });
         }
@@ -75,6 +77,7 @@ class AdminOperationLogStatisticController extends AdminController
         $grid->column('user.name', __('admin-operation-log-statistic.fields.name'));
         $grid->column('role_name', __('admin-operation-log-statistic.fields.role_name'))
             ->display(function () {
+                // @phpstan-ignore-next-line
                 return $this->user?->roles?->pluck('name');
             })->label();
         $grid->column('total', __('admin-operation-log-statistic.fields.total'))->sortable();

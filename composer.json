@@ -26,7 +26,7 @@
     "orchestra/testbench": "^7.0",
     "laravel/pint": ">1.0",
     "phpstan/phpstan": "^1.10",
-    "nunomaduro/larastan": "^2.0"
+    "larastan/larastan": "^2.11"
   },
   "autoload": {
     "psr-4": {
