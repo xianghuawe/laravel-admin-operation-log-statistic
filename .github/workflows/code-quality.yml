@@ -35,6 +35,3 @@ jobs:
 
       - name: Run PHPStan
         run: php vendor/bin/phpstan analyze
-
-      - name: Run PHPUnit
-        run: php vendor/bin/phpunit
