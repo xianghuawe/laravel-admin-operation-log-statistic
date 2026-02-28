@@ -23,9 +23,7 @@ jobs:
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
-          path:
-            - ~/.composer/cache
-            - vendor/
+          path: ~/.composer/cache
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
