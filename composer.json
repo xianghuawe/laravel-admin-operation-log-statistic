@@ -45,5 +45,10 @@
       ],
       "aliases": {}
     }
+  },
+  "config": {
+    "audit": {
+      "block-insecure": false
+    }
   }
 }
