@@ -3,14 +3,14 @@
 namespace Xianghuawe\Admin\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Xianghuawe\Admin\Mail\BaseMail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Support\Arr;
 use Xianghuawe\Admin\Mail\AdminOperationLogStatisticWarning;
+use Xianghuawe\Admin\Mail\BaseMail;
 
 class StatisticCommand extends Command
 {
@@ -20,14 +20,16 @@ class StatisticCommand extends Command
 
     /**
      * @return int
+     *
      * @throws \Exception
      */
     public function handle()
     {
         $configKey  = 'admin-operation-log.request_rate_limit_count';
-        $countLimit = (int)config($configKey, 100);
+        $countLimit = (int) config($configKey, 100);
         if ($countLimit < 1) {
             Log::error($this->description . "缺少配置[$configKey]或者配置[$configKey]不正确");
+
             return self::FAILURE;
         }
         $statisticDate = today()->subDay();
@@ -58,11 +60,13 @@ class StatisticCommand extends Command
                     if (!empty($matches)) {
                         $item->path = $matches[1];
                     }
+
                     return $item;
                 })
                     ->groupBy('path')
                     ->transform(function ($item) {
                         $fist = $item->first();
+
                         return [
                             'user_id' => $fist->user_id,
                             'path'    => $fist->path,
@@ -92,6 +96,7 @@ class StatisticCommand extends Command
                         return null;
                     }
                 }
+
                 return $item;
             })
             ->filter()
@@ -130,7 +135,7 @@ class StatisticCommand extends Command
             'content'             => $mailableNotification->render(),
             'created_by'          => null,
             'priority'            => 1,
-            'notification_source' => json_encode($mailableNotification->envelope())
+            'notification_source' => json_encode($mailableNotification->envelope()),
         ];
 
         $requestId                  = Str::uuid();
@@ -148,20 +153,17 @@ class StatisticCommand extends Command
             $msg = Arr::get($res, 'message');
             throw new \Exception('send email got error ' . $msg);
         }
+
         return true;
     }
 
     /**
      * 签名
-     *
-     * @param array  $data
-     * @param string $secret
-     *
-     * @return string
      */
     public static function signature(array $data, string $secret): string
     {
         ksort($data);
+
         return md5(Arr::query($data) . "&secret={$secret}");
     }
 }

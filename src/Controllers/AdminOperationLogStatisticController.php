@@ -20,10 +20,9 @@ class AdminOperationLogStatisticController extends AdminController
      */
     protected function grid(): Grid
     {
-
         $model = config('admin.database.operation_statistic_model');
 
-        $grid = new Grid(new $model());
+        $grid = new Grid(new $model);
 
         $companyModel = config('admin.database.company_model');
 

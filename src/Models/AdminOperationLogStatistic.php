@@ -24,7 +24,6 @@ class AdminOperationLogStatistic extends Model
         parent::__construct($attributes);
     }
 
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(config('admin.database.users_model'));

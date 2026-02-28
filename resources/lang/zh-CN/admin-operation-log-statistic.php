@@ -6,10 +6,10 @@ return [
     ],
 
     'fields' => [
-        "id" => "ID",
+        'id' => 'ID',
 
-        "created_at"  => "创建时间",
-        "updated_at"  => "更新时间",
+        'created_at'  => '创建时间',
+        'updated_at'  => '更新时间',
         'date'        => '日期',
         'role_name'   => '角色',
         'total'       => '访问次数',
