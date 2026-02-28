@@ -4,6 +4,7 @@ namespace Xianghuawe\Admin\Controllers;
 
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Grid;
+use Illuminate\Database\Eloquent\Builder;
 
 class AdminOperationLogStatisticController extends AdminController
 {
@@ -24,12 +25,26 @@ class AdminOperationLogStatisticController extends AdminController
 
         $grid = new Grid(new $model());
 
-        $grid->filter(function ($filter) {
-            $filter->column(1 / 2, function (Grid\Filter $filter) {
+        $companyModel = config('admin.database.company_model');
+
+        $grid->filter(function ($filter) use ($companyModel) {
+            $filter->column(1 / 2, function (Grid\Filter $filter) use ($companyModel) {
                 $roleModel = config('admin.database.roles_model');
                 $filter->equal('user.roles.id', __('admin-operation-log-statistic.fields.role_name'))
                     ->select($roleModel::all()->pluck('name', 'id'));
                 $filter->equal('user.invite_code', __('admin-operation-log-statistic.fields.invite_code'));
+
+                if($companyModel){
+                    $companyList = $companyModel::all()->pluck('name', 'id')->prepend('平台', -1);
+                    $filter->where(function (Builder $builder) {
+                        $this->input = strip_tags($this->input);
+                        if($this->input == -1){
+                            $this->input = null;
+                        }
+                        $builder->where('company_id', $this->input);
+                    }, __('admin-operation-log-statistic.fields.company'), 'company_id')->select($companyList);
+                }
+
                 $filter->like('user.username', __('admin-operation-log-statistic.fields.username'));
                 $filter->like('user.name', __('admin-operation-log-statistic.fields.name'));
             });
@@ -43,21 +58,20 @@ class AdminOperationLogStatisticController extends AdminController
             $actions->disableAll();
         });
 
+        $with = ['user.roles'];
+        if($companyModel){
+            $with[] = 'company';
+        }
 
-        $grid->model()->with([
-            'user.roles',
-            'user' => function($query) {
-                $query->with(['company' => function($query) {
-                    $query->withDefault();
-                }]);
-            }
-        ]);
+        $grid->model()->with($with);
 
         $grid->column('date', __('admin-operation-log-statistic.fields.date'));
         $grid->column('user_id', __('admin-operation-log-statistic.fields.user_id'));
-        $grid->column('company', __('admin-operation-log-statistic.fields.company'))->display(function(){
-            return $this->user?->company?->name;
-        });
+        if($companyModel){
+            $grid->column('company', __('admin-operation-log-statistic.fields.company'))->display(function(){
+                return $this->company?->name;
+            });
+        }
         $grid->column('user.username', __('admin-operation-log-statistic.fields.username'));
         $grid->column('user.name', __('admin-operation-log-statistic.fields.name'));
         $grid->column('role_name', __('admin-operation-log-statistic.fields.role_name'))
