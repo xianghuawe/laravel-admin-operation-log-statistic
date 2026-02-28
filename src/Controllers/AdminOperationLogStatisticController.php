@@ -33,11 +33,11 @@ class AdminOperationLogStatisticController extends AdminController
                     ->select($roleModel::all()->pluck('name', 'id'));
                 $filter->equal('user.invite_code', __('admin-operation-log-statistic.fields.invite_code'));
 
-                if($companyModel){
+                if ($companyModel) {
                     $companyList = $companyModel::all()->pluck('name', 'id')->prepend('平台', -1);
                     $filter->where(function (Builder $builder) {
                         $this->input = strip_tags($this->input);
-                        if($this->input == -1){
+                        if ($this->input == -1) {
                             $this->input = null;
                         }
                         $builder->where('company_id', $this->input);
@@ -58,7 +58,7 @@ class AdminOperationLogStatisticController extends AdminController
         });
 
         $with = ['user.roles'];
-        if($companyModel){
+        if ($companyModel) {
             $with[] = 'company';
         }
 
@@ -66,8 +66,8 @@ class AdminOperationLogStatisticController extends AdminController
 
         $grid->column('date', __('admin-operation-log-statistic.fields.date'));
         $grid->column('user_id', __('admin-operation-log-statistic.fields.user_id'));
-        if($companyModel){
-            $grid->column('company', __('admin-operation-log-statistic.fields.company'))->display(function(){
+        if ($companyModel) {
+            $grid->column('company', __('admin-operation-log-statistic.fields.company'))->display(function () {
                 return $this->company?->name;
             });
         }

@@ -43,18 +43,18 @@ class StatisticCommand extends Command
 
         $exceptPaths = config('admin.operation_log_statistic.except', []);
 
-
         $userCompanyList = $data->pluck('user_id')->unique()->map(function ($item) {
-           $user = config('admin.database.users_model')::find($item);
-           return [
+            $user = config('admin.database.users_model')::find($item);
+
+            return [
                 'user_id'       => $item,
                 'company_id'    => $user?->company?->id,
-           ];
+            ];
         });
 
         $data = $data->groupBy('user_id')
             ->map(function (Collection $item) use ($countLimit, $statisticDate, $exceptPaths, $userCompanyList) {
-                $item = $item->transform(function ($item) use ($countLimit, $statisticDate) {
+                $item = $item->transform(function ($item) {
                     // 合并path里包含参数的路由
                     preg_match('/(.*)\/\d+$/', $item->path, $matches);
                     if (!empty($matches)) {
