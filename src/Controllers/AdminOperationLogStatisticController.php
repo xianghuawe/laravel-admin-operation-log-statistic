@@ -63,7 +63,7 @@ class AdminOperationLogStatisticController extends AdminController
             $with[] = 'company';
         }
 
-        $grid->model()->with($with);
+        $grid->model()->with($with)->orderBy('id', 'desc');
 
         $grid->column('date', __('admin-operation-log-statistic.fields.date'));
         $grid->column('user_id', __('admin-operation-log-statistic.fields.user_id'));
